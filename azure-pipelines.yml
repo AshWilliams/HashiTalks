@@ -38,10 +38,11 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)/Demo'
     environmentServiceNameAzureRM: 'InternalOSSAzure(658a53e3-ea72-4675-b77a-0380f3b476e6)'
 
-- task: Delay@1
-  displayName: '2 Minutes Fixed Delay'
+- task: PowerShell@2
+  displayName: 'Fixed time, halt for 2 minutes'
   inputs:
-    delayForMinutes: '2'
+    targetType: 'inline'
+    script: 'Start-Sleep -Seconds 120'
 
 - task: TerraformTaskV1@0
   displayName: 'Terraform destroy'
