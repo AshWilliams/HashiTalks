@@ -1,0 +1,52 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- task: TerraformInstaller@0
+  displayName: 'Install Terraform'
+  inputs:
+    terraformVersion: '0.12.3'
+
+- task: TerraformTaskV1@0
+  displayName: 'Terraform Init'
+  inputs:
+    provider: 'azurerm'
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Demo'
+    backendServiceArm: 'InternalOSSAzure(658a53e3-ea72-4675-b77a-0380f3b476e6)'
+    backendAzureRmResourceGroupName: 'RG-AKS-BlueTeam'
+    backendAzureRmStorageAccountName: 'sqlvaijxytkrcubszo'
+    backendAzureRmContainerName: 'tfstate'
+    backendAzureRmKey: 'state' 
+
+- task: TerraformTaskV1@0
+  displayName: 'Terraform apply'
+  inputs:
+    provider: 'azurerm'
+    command: 'apply'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Demo'
+    environmentServiceNameAzureRM: 'InternalOSSAzure(658a53e3-ea72-4675-b77a-0380f3b476e6)'
+
+- task: Delay@1
+  displayName: '2 Minutes Fixed Delay'
+  inputs:
+    delayForMinutes: '2'
+
+- task: TerraformTaskV1@0
+  displayName: 'Terraform destroy'
+  inputs:
+    provider: 'azurerm'
+    command: 'destroy'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/Demo'
+    environmentServiceNameAzureRM: 'InternalOSSAzure(658a53e3-ea72-4675-b77a-0380f3b476e6)'
