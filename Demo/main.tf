@@ -5,12 +5,12 @@ provider "azurerm" {
     features {}
 }
 
-# Resource Creation
+# Resource Group
 resource "azurerm_resource_group" "azurerg" {
   name     = var.resource_group_name
   location = var.location
 }
-
+# Storage Account
 resource "azurerm_storage_account" "azurestor" {
   name                     = var.sa_name
   resource_group_name      = azurerm_resource_group.azurerg.name
